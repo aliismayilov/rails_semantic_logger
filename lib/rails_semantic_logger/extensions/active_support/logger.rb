@@ -5,6 +5,12 @@ module ActiveSupport
   class Logger
     class << self
       undef :logger_outputs_to?, :broadcast
+
+      if ::Rails::VERSION::STRING < "7.1"
+        undef :broadcast
+      else
+        undef :broadcast_to
+      end
     end
 
     # Prevent Console from trying to merge loggers
@@ -13,7 +19,11 @@ module ActiveSupport
     end
 
     # Prevent broadcasting since SemanticLogger already supports multiple loggers
-    def self.broadcast(logger)
+    def self.broadcast(_logger)
+      Module.new
+    end
+
+    def self.broadcast_to(_logger)
       Module.new
     end
 
